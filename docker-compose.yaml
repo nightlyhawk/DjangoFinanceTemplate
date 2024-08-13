@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+
+    redis:
+        image: redis:7.0.11-alpine
+
+    django:
+        container_name: django
+        build:
+            context: ./bank 
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - ./bank:/usr/src/app/
+        ports:
+            - 8001:8000
+        environment:
+            - DEBUG=1
+            - SECRET_KEY=hdhdhddhdh73737373hdhdh2828kkhhhk
+            - ALLOWED_HOSTS=localhost,127.0.0.1
+            - POSTGRES_DATABASE=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres123
+            - POSTGRES_HOST=PostgresCont
+            - POSTGRES_DB_PORT=5432
+        depends_on:
+            - redis
+    celery:
+        container_name: celery1
+        build:
+            context: ./bank
+        command: celery --app=bank worker -l INFO -Q queue1
+        volumes:
+            - ./bank:/usr/src/app/
+        environment:
+            - DEBUG=1
+            - SECRET_KEY=hdhdhddhdh73737373hdhdh2828kkhhhk
+            - ALLOWED_HOSTS=localhost,127.0.0.1
+        depends_on:
+            - redis
+            - django
+    
+    postgres_db:
+        image: postgres:latest
+        container_name: PostgresCont 
+        restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres123
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_db:/var/lib/postgresql/data
+    
+    volumes:
+        postgres_db:
+        driver: local
