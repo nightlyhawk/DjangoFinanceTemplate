@@ -9,6 +9,7 @@ services:
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres123
+            - POSTGRES_DB=bank_db
         ports:
             - '5432:5432'
         volumes:
@@ -30,7 +31,7 @@ services:
             - DEBUG=1
             - SECRET_KEY=hdhdhddhdh73737373hdhdh2828kkhhhk
             - ALLOWED_HOSTS=localhost,127.0.0.1
-            - POSTGRES_DATABASE=postgres
+            - POSTGRES_DATABASE=bank_db
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres123
             - POSTGRES_HOST=PostgresCont
